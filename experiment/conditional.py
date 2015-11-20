@@ -1,3 +1,8 @@
+"""
+Experiment to investigate the performance of using a dictionary as a conditional statement.
+
+A number of different types of dictionary are tried and compared against an if..elfif else statement
+"""
 import time
 
 class STOPWATCH:
@@ -129,6 +134,8 @@ def conditionalTest2(trigger):
 	except Exception as e:
 		error("ERROR: trigger {0} unknown".format(trigger))
 
+# Define the dictionary once (as a global). This makes a massive difference when executing
+# the conditional check many times.
 _conditionalTest3_actions = {
 	'this': lambda: [
 		doWork("this1"),
@@ -222,7 +229,8 @@ def ifTest(trigger):
 def main():
 	sw = STOPWATCH()
 	NUMBER_ITERS = 5000000
-	trigger = 'last'
+	trigger = 'last' # Dictionary wins over IF statement
+	#trigger = 'this' # IF statement quicker but not by much
 
 	print("[1] Conditional Test - " + trigger)
 	sw.start()
