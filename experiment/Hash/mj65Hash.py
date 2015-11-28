@@ -4,11 +4,19 @@ Hash class
 class mj65Hash:
 	_inputStream = []
 	_outputStream = ['A' for x in range(256) ]
+	NUMBER_LOOPS = 1
+
+	def execPrint(self, str):
+		outStr = self.exec(str)
+		trace("{0}==>{1}".format(str, outStr))
+		trace(len(outStr))
 
 	def exec(self, input):
 		self._convertInputToList(input)
 		self._padInput()
-		self._encrypt()
+		for i in range(self.NUMBER_LOOPS):
+			self._encrypt()
+			self._inputStream = self._outputStream
 		return self._convertToOutStr()
 
 	"""
@@ -70,10 +78,49 @@ class mj65Hash:
 			self._outputStream[outPos] = chr(outChar)
 			pos += 1
 
-	def execPrint(self, str):
-		outStr = self.exec(str)
-		trace("{0}==>{1}".format(str, outStr))
-		trace(len(outStr))
+	"""
+	For debugging purposes this function looks for repeating patterns in the output
+	"""
+	_repeatList = set([])
+	MIN_PATTERN_SIZE = 4
+	def findRepeatingPatterns(self):
+		_repeatList = [] # Will store patterns we find in here
+		outStr = self._convertToOutStr()
+		pos = 1
+		for ch in outStr:
+			pat = ch
+			rest = outStr[pos:]
+			self.findRepeatAux(pat, rest)
+			pos += 1
+		for pat in self._repeatList:
+			trace("Repeating Pattern: {0}".format(pat))
+
+	def findRepeatAux(self, pat, str):
+		
+		if len(str) < 2:
+			return False
+		elif len(pat) < self.MIN_PATTERN_SIZE:
+			newPat = pat + str[0]
+			rest = str[1:]
+			return self.findRepeatAux(newPat, rest) 
+		# search for pat in str. If present add to list of results
+		elif str.find(pat) > -1:
+			# See if we can go any bigger
+			newPat = pat + str[0]
+			rest = str[1:]
+			if self.findRepeatAux(newPat, rest) == False:
+				self.checkAndAddToList(pat)
+			return True
+		else:
+			return False
+
+	def checkAndAddToList(self, pat):
+		for it in self._repeatList:
+			if len(it) >= len(pat):
+				return False # bigger item already in list, just ignore
+		# if we get here add pat to list
+		self._repeatList.add(pat)
+		return True
 
 
 def error(str):
@@ -92,7 +139,9 @@ def main():
 		t4 += str(i) + ''
 	hash = mj65Hash()
 	hash.execPrint(t1)
-	hash.execPrint(t2)
+	hash.findRepeatingPatterns()
+	#hash.execPrint(t2)
+	#hash.execPrint(t3)
 	
 
 if __name__ == '__main__':	

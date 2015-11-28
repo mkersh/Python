@@ -14,6 +14,12 @@ def main():
 	t4 = list("123")
 	t5 = t4 + t4
 	print(t5)
+
+	t1 = "abcd"
+	t2 = t1[0]
+	t3 = t1[1:]
+	print(t2)
+	print(t3)
 	
 if __name__ == '__main__':	
 	main()
