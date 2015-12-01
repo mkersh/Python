@@ -11,7 +11,7 @@ for each input string passed.
 
 I have also tested it over 100K iterations to prove the it doesn't generate the same hash twice.
 
-I some point I plan to study the SHA1 (SHA256) algorithms to see the approach they take and how it differs from mine.
+At some point I plan to study the SHA1 (SHA256) algorithms to see the approach they take and how it differs from mine.
 """
 class mj65Hash:
 	_inputStream = []
@@ -118,12 +118,7 @@ class mj65Hash:
 				# If the Hash function is to work we want full coverage of all 256 positions
 				# and an even distribution (given enough calls to the hash)
 				self.recordOutputPosition(outPos)
-			# Originally I was doing something far simpler in terms of determining the outPos
-			# This was not random enough though
-			#outPos = pos % 256
-			#print(outPos)
-			#outChar = (outPos + ord(inByte) + ord(self._outputStream[outPos])) % 62
-			#outChar = ((outPos+1) * ord(inByte) * (ord(self._outputStream[outPos])+1)) % 62
+			# Determine the new outChar for this position
 			outChar = (((outPos+1) * ord(inByte)) + (ord(self._outputStream[outPos])+1)) % 62
 			if self._recordOutputChar == True:
 				# For debug and testing purposes record the number of times each outPos is used
