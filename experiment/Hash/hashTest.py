@@ -20,6 +20,8 @@ def main():
 	t3 = t1[1:]
 	print(t2)
 	print(t3)
+
+	print(chr(61))
 	
 if __name__ == '__main__':	
 	main()
