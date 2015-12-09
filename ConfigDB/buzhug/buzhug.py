@@ -87,8 +87,15 @@ Version 1.8
 """
 
 import os
+import sys
+def isPython2():
+        return sys.version.startswith("2.")
 import threading
-import cStringIO
+if isPython2():
+    import cStringIO
+else:
+    import io
+    unicode = str
 import itertools
 import token
 import tokenize
@@ -106,9 +113,14 @@ try:
 except NameError:
     from sets import Set as set
 
-from buzhug_files import *
-import buzhug_algos
-import buzhug_info
+if isPython2():
+    from buzhug_files import *
+    import buzhug_algos 
+    import buzhug_info
+else:
+    from buzhug.buzhug_files import *
+    import buzhug.buzhug_algos as buzhug_algos 
+    import buzhug.buzhug_info as buzhug_info
 
 version = "1.8"
 
@@ -133,12 +145,12 @@ class Record(list):
         try:
             ix = self.fields.index(k)
         except ValueError:
-            raise AttributeError,'No attribute named %s' %k
+            raise AttributeError('No attribute named %s' %k)
         try:
             return self.db.f_decode[self.types[ix]](list.__getitem__(self,ix))
         except:
-            print 'error for key %s type %s value %s' %(k,self.types[ix],
-                list.__getitem__(self,ix))
+            print('error for key %s type %s value %s' %(k,self.types[ix],
+                list.__getitem__(self,ix)))
             raise
 
     def __setattr__(self,k,v):
@@ -190,8 +202,8 @@ class ResultSet(list):
         """pretty print"""
         col_width = width/len(self.names)
         fmt = '%%-%ss' %col_width
-        print '|'.join([fmt %name for name in self.names])
-        print '|'.join([fmt %('-'*col_width) for name in self.names])
+        print('|'.join([fmt %name for name in self.names]))
+        print('|'.join([fmt %('-'*col_width) for name in self.names]))
         for rec in self:
             line = []
             for name in self.names:
@@ -200,7 +212,7 @@ class ResultSet(list):
                     line.append(v)
                 else:
                     enc = line.append(v.encode('latin-1'))
-            print '|'.join(line)
+            print('|'.join(line))
 
     def sort_by(self,order):
         """order is a string with field names separated by + or -
@@ -216,11 +228,11 @@ class ResultSet(list):
             ts = t[1]
             if tt == 'OP':
                 if not ts in ['+','-']:
-                    raise SyntaxError,"Bad operator in sort condition: %s" %ts
+                    raise SyntaxError("Bad operator in sort condition: %s" %ts)
                 order = ts
             elif tt == 'NAME':
                 if not ts in self.names:
-                    raise ValueError,"Unknown sort field :%s" %ts
+                    raise ValueError("Unknown sort field :%s" %ts)
                 cond.append((self.names.index(ts),order))
         # build the function order_func used to sort records
         o_f = "def order_func(rec):\n"
@@ -232,7 +244,9 @@ class ResultSet(list):
             else:
                 elts.append("buzhug_algos.rev(rec[%s])" %ix)
         o_f += ",".join(elts) +"]"        
-        exec o_f in globals()  # this creates the global function order_func
+        #MK: Next line doesn't work in python 3
+        #exec o_f in globals()  # this creates the global function order_func
+        exec(o_f,globals())
 
         # apply the key
         try:
@@ -387,14 +401,14 @@ class Base:
                 elif mode == 'open':
                     return self.open()
                 else:
-                    raise IOError,"Base %s already exists" %self.name
+                    raise IOError("Base %s already exists" %self.name)
             else:
                 if mode != 'open':
-                    raise IOError,"Directory %s already exists" %self.name
+                    raise IOError("Directory %s already exists" %self.name)
                 else:
-                    raise IOError,"Mode 'open' : " \
-                        "Directory %s already exists but no info file found" \
-                        %self.name
+                    raise IOError("Mode 'open' : " \
+                        "Directory %s already exist)but no info file found" \
+                        %self.name)
 
         self.field_names = [ f[0] for f in fields ]
         self.fields = dict([(f[0],f[1]) for f in fields])
@@ -431,11 +445,11 @@ class Base:
         Raise IOError if no base is found for the path entered in __init__
         """
         if not os.path.exists(self.name) or not os.path.isdir(self.name):
-            raise IOError,"Base %s doesn't exist" %self.name
+            raise IOError("Base %s doesn't exist" %self.name)
         try:
             _info = open(self.info_name,'rb')
         except IOError:
-            raise IOError,"No buzhug base in directory %s" %self.name
+            raise IOError("No buzhug base in directory %s" %self.name)
         return self._open(_info)
         
     def _open(self,info):
@@ -508,17 +522,17 @@ class Base:
         Return the identifier of the newly inserted record
         """
         if args and kw:
-            raise SyntaxError,"Can't use both positional and keyword arguments"
+            raise SyntaxError("Can't use both positional and keyword arguments")
         if args:
             # insert a list of values ordered like in the base definition
             if not len(args) == len(self.field_names)-2:
-                raise TypeError,"Expected %s arguments, found %s" \
-                   %(len(self.field_names)-2,len(args))
+                raise TypeError("Expected %s arguments, found %s" \
+                   %(len(self.field_names)-2,len(args)))
             return self.insert(**dict(zip(self.field_names[2:],args)))
         if '__id__' in kw.keys():
-            raise NameError,"Specifying the __id__ is not allowed"
+            raise NameError("Specifying the __id__ is not allowed")
         if '__version__' in kw.keys():
-            raise NameError,"Specifying the __version__ is not allowed"
+            raise NameError("Specifying the __version__ is not allowed")
         rec = dict([(f,self.defaults[f]) for f in self.field_names[2:]])
         for (k,v) in kw.iteritems():
             self._validate(k,v)
@@ -556,7 +570,7 @@ class Base:
             d = date(1994,10,7)
             t = time.strptime(d.strftime(format),format)
             if not t[:3] == d.timetuple()[:3]:
-                raise TimeFormatError,'%s is not a valid date format' %format
+                raise TimeFormatError('%s is not a valid date format' %format)
             else:
                 # create the conversion function string -> date
                 def _from_string(ds):
@@ -567,8 +581,8 @@ class Base:
             dt = datetime(1994,10,7,8,30,15)
             t = time.strptime(dt.strftime(format),format)
             if not t[:6] == dt.timetuple()[:6]:
-                raise TimeFormatError,'%s is not a valid datetime format' \
-                    %format
+                raise TimeFormatError('%s is not a valid datetime format' \
+                    %format)
             else:
                 # create the conversion function string -> date
                 def _from_string(dts):
@@ -579,15 +593,15 @@ class Base:
             dt = dtime(8,30,15)
             t = time.strptime(dt.strftime(format),format)
             if not t[3:6] == (dt.hour, dt.minute, dt.second):
-                raise TimeFormatError,'%s is not a valid datetime.time format' \
-                    %format
+                raise TimeFormatError('%s is not a valid datetime.time format' \
+                    %format)
             else:
                 # create the conversion function string -> dtime
                 def _from_string(dts):
                     return dtime(*time.strptime(dts,format)[3:6])
                 self.from_string[dtime] = _from_string
         else:
-            raise ValueError,"Can't specify a format for class %s" %class_
+            raise ValueError("Can't specify a format for class %s" %class_)
 
     def insert_as_strings(self,*args,**kw):
         """Insert a record with values provided as strings. They must be
@@ -595,12 +609,12 @@ class Base:
         functions defined in the dictionary from_string
         """
         if args and kw:
-            raise SyntaxError,"Can't use both positional and keyword arguments"
+            raise SyntaxError("Can't use both positional and keyword arguments")
         if args:
             # insert a list of strings ordered like in the base definition
             if not len(args) == len(self.field_names)-2:
-                raise TypeError,"Expected %s arguments, found %s" \
-                   %(len(self.field_names)-2,len(args))
+                raise TypeError("Expected %s arguments, found %s" \
+                   %(len(self.field_names)-2,len(args)))
             return self.insert_as_strings(**dict(zip(self.field_names[2:],
                 args)))
         return self.insert(**self.apply_types(**kw))
@@ -613,14 +627,14 @@ class Base:
             try:
                 t = self.fields[k]
             except KeyError:
-                raise NameError,"No field named %s" %k
+                raise NameError("No field named %s" %k)
             if not self.from_string.has_key(t):
-                raise Exception,'No string format defined for %s' %t
+                raise Exception('No string format defined for %s' %t)
             else:
                 try:
                     or_kw[k] = self.from_string[t](kw[k])
                 except:
-                    raise TypeError,"Can't convert %s into %s" %(kw[k],t)
+                    raise TypeError("Can't convert %s into %s" %(kw[k],t))
         return or_kw
 
     def commit(self):
@@ -831,8 +845,10 @@ class Base:
         # prepare namespace
         args.update(_namespace)
 
+        # MK: Next section didnt work in python 3
         # execute the loop
-        exec loop in locals(),args
+        #exec loop in locals(),args
+        exec(loop,locals(),args)
 
         # exclude deleted rows from the results
         if self._del_rows.deleted_rows:
@@ -855,9 +871,9 @@ class Base:
             return
         only_fixed_length = True
         if '__id__' in kw.keys():
-            raise NameError,"Can't update __id__"
+            raise NameError("Can't update __id__")
         if '__version__' in kw.keys():
-            raise NameError,"Can't update __version__"
+            raise NameError("Can't update __version__")
         for (k,v) in kw.iteritems():
             self._validate(k,v)
             setattr(record,k,v)
@@ -867,7 +883,7 @@ class Base:
 
         if not hasattr(record,'__id__') or not hasattr(record,'__version__'):
             # refuse to update a record that was not selected for update
-            raise UpdateError,'The record was not selected for update'
+            raise UpdateError('The record was not selected for update')
 
         _id = record.__id__
         # line number of the record in position file
@@ -878,7 +894,7 @@ class Base:
         # file is not the same, refuse to update
         current_version = self[_id].__version__
         if not record.__version__ == current_version:
-            raise ConflictError,'The record has changed since selection'
+            raise ConflictError('The record has changed since selection')
 
         # increment version
         record.__version__ += 1
@@ -926,7 +942,7 @@ class Base:
         """Add a new field after the specified field, or in the beginning if
         no field is specified"""
         if field_name in self.field_names:
-            raise NameError,"Field %s already exists" %field_name
+            raise NameError("Field %s already exists" %field_name)
         field_def = [field_name,field_type]
         if default is not None:
             field_def.append(default)
@@ -937,7 +953,7 @@ class Base:
         if after is None:
             indx = 2 # insert after __version__
         elif not after in self.field_names:
-            raise NameError,"No field named %s" %after
+            raise NameError("No field named %s" %after)
         else:
             indx = 1+self.field_names.index(after)
         self.field_names.insert(indx,field_name)
@@ -955,11 +971,11 @@ class Base:
     def drop_field(self,field_name):
         """Remove the specified field name"""
         if not field_name in self.field_names:
-            raise NameError,"No field named %s" %field_name
+            raise NameError("No field named %s" %field_name)
         if field_name == '__id__':
-            raise ValueError,"Field __id__ can't be removed"
+            raise ValueError("Field __id__ can't be removed")
         if field_name == '__version__':
-            raise ValueError,"Field __version__ can't be removed"
+            raise ValueError("Field __version__ can't be removed")
         indx = self.field_names.index(field_name)
         self.field_names.remove(field_name)
         del self.defaults[field_name]
@@ -973,7 +989,7 @@ class Base:
     def _validate(self,k,v):
         """Validate the couple key,value"""
         if not k in self.fields.keys():
-            raise NameError,"No field named %s" %k
+            raise NameError("No field named %s" %k)
         if v is None:
             return
         # if self.fields[k] is an instance of Base, the value must be an
@@ -981,15 +997,15 @@ class Base:
         # db == self.fields[k]
         if isinstance(self.fields[k],Base):
             if not issubclass(v.__class__,Record):
-                raise TypeError,"Bad type for %s : expected %s, got %s %s" \
-                      %(k,self.fields[k],v,v.__class__)
+                raise TypeError("Bad type for %s : expected %s, got %s %s" \
+                      %(k,self.fields[k],v,v.__class__))
             if v.__class__.db.name != self.fields[k].name:
-                raise TypeError,"Bad base for %s : expected %s, got %s" \
-                      %(k,self.fields[k].name,v.__class__.db.name)
+                raise TypeError("Bad base for %s : expected %s, got %s" \
+                      %(k,self.fields[k].name,v.__class__.db.name))
         else:
             if not isinstance(v,self.fields[k]):
-                raise TypeError,"Bad type for %s : expected %s, got %s %s" \
-                      %(k,self.fields[k],v,v.__class__)
+                raise TypeError("Bad type for %s : expected %s, got %s %s" \
+                      %(k,self.fields[k],v,v.__class__))
 
     def _iterate(self,*names):
         """_iterate on the specified names only"""
@@ -1005,7 +1021,7 @@ class Base:
         # first find the line in position file
         block_pos = self._id_pos.get_block_at_pos(5*num)
         if block_pos[0] == '#':
-            raise IndexError,'No item at position %s' %num
+            raise IndexError('No item at position %s' %num)
         else:
             _id_pos = self._id_pos.from_block(block_pos)
         # block in position file
@@ -1166,5 +1182,7 @@ class TS_Base(Base):
         finally:
             _releaseLock()
         return res
+
+    
 
     

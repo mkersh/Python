@@ -3,6 +3,13 @@ field definitions with types and default values"""
 
 import os
 import urllib
+import sys
+def isPython2():
+        return sys.version.startswith("2.")
+
+if isPython2():
+    def bytes(str, encoding):
+        return str
 
 def set_info(base,fields):
     base.defaults = {}
@@ -13,28 +20,28 @@ def validate_field(base,field_def):
     """Validate field definition"""
     name,typ = field_def[:2]
     if name in ['__id__','__version__']:
-        raise ValueError,'Field name "%s" is reserved' %name
+        raise ValueError('Field name "%s" is reserved' %name)
     elif name.startswith('_'):
-        raise ValueError,"Error for %s : names can't begin with _" \
-            % name
+        raise ValueError("Error for %s : names can't begin with _" \
+            % name)
     if typ not in base.types.values():
         if isinstance(typ,base.__class__): # external link
             base._register_base(typ)
         else:
-            raise TypeError,"type %s not allowed" %typ    
+            raise TypeError("type %s not allowed" %typ)
     if len(field_def)>2:
         # if a default value is provided, check if it is valid
         default = field_def[2]
         if isinstance(typ,base.__class__):
             if not hasattr(default.__class__,"db") or \
                 not default.__class__.db is typ:
-                raise ValueError,'Incorrect default value for field "%s"' \
+                raise ValueError('Incorrect default value for field "%s"' \
                     " : expected %s, got %s (class %s)" %(name,typ,
-                        default,default.__class__)
+                        default,default.__class__))
         elif not isinstance(default,typ):
-            raise ValueError,'Incorrect default value for field "%s"' \
+            raise ValueError('Incorrect default value for field "%s"' \
                 " : expected %s, got %s (class %s)" %(name,typ,
-                    default,default.__class__)
+                    default,default.__class__))
         base.defaults[name] = default
     else:
         base.defaults[name] = None
@@ -48,14 +55,14 @@ def save_info(base):
             fields.append((k,'<base>'+urllib.quote(base.fields[k].name)))
         else:
             fields.append((k,base.fields[k].__name__))
-    _info.write(' '.join(['%s:%s' %(k,v) for (k,v) in fields]))
+    _info.write(bytes(' '.join(['%s:%s' %(k,v) for (k,v) in fields]), 'utf-8'))
     _info.close()
     out = open(os.path.join(base.name,"__defaults__"),"wb")
-    for field_name,default_value in base.defaults.iteritems():
+    for field_name,default_value in base.defaults.items():
         if field_name in ["__id__","__version__"]:
             continue
         value = base._file[field_name].to_block(default_value)
-        out.write("%s %s" %(field_name,value))
+        out.write(bytes("%s %s" %(field_name,value), 'utf-8'))
     out.close()
 
 def read_defaults(base):

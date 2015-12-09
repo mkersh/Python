@@ -45,7 +45,9 @@ class File:
     def create(self):
         if not os.path.isdir(self.base):
             os.mkdir(self.base)
-        file(self.path,'w').close()
+        # MK: Next line not working on python 3
+        #file(self.path,'w').close()
+        open(self.path,'w').close()
         self.fileobj = open(self.path,'r+b')
         return self
 
@@ -149,8 +151,8 @@ class StringFile(VariableLengthFile):
         if value is None:
             return '!\n'
         elif not isinstance(value,str):
-            raise ValueError,'Bad type : expected str, got %s %s' %(value,
-                    value.__class__)
+            raise ValueError('Bad type : expected str, got %s %s' %(value,
+                    value.__class__))
         else:
             # escape CR & LF so that the block is on one line
             value = value.replace('\\','\\\\')
@@ -193,8 +195,8 @@ class UnicodeFile(StringFile):
         if value is None:
             return '!\n'
         elif not isinstance(value,unicode):
-            raise ValueError,'Bad type : expected unicode, got %s %s' %(value,
-                    value.__class__)
+            raise ValueError('Bad type : expected unicode, got %s %s' %(value,
+                    value.__class__))
         else:
             return StringFile.to_block(self,value.encode('utf-8'))
     
@@ -220,8 +222,8 @@ class DateFile(VariableLengthFile):
         if value is None:
             return '!xxxxxxxx\n'
         elif not isinstance(value,date):
-            raise ValueError,'Bad type : expected datetime.date, got %s %s' \
-                %(value,value.__class__)
+            raise ValueError('Bad type : expected datetime.date, got %s %s' \
+                %(value,value.__class__))
         else:
             if value.year>=1900:
                 return value.strftime('-%Y%m%d')+'\n'
@@ -243,8 +245,8 @@ class DateTimeFile(VariableLengthFile):
         if value is None:
             return '!xxxxxxxxxxxxxx\n'
         elif not isinstance(value,date):
-            raise ValueError,'Bad type : expected datetime.date, got %s %s' \
-                %(value,value.__class__)
+            raise ValueError('Bad type : expected datetime.date, got %s %s' \
+                %(value,value.__class__))
         else:
             if value.year>=1900:
                 return value.strftime('-%Y%m%d%H%M%S')+'\n'
@@ -272,8 +274,8 @@ class TimeFile(VariableLengthFile):
         if value is None:
             return '!xxxxxx\n'
         elif not isinstance(value, dtime):
-            raise ValueError,'Bad type : expected datetime.time, got %s %s' \
-                %(value,value.__class__)
+            raise ValueError('Bad type : expected datetime.time, got %s %s' \
+                %(value,value.__class__))
         else:
             return value.strftime('-%H%M%S')+'\n'
     
@@ -291,8 +293,8 @@ class BooleanFile(FixedLengthFile):
         if value is None:
             return '!'+chr(0)
         elif not isinstance(value,bool):
-            raise ValueError,'Bad type : expected bool, got %s %s' \
-                %(value,value.__class__)
+            raise ValueError('Bad type : expected bool, got %s %s' \
+                %(value,value.__class__))
         else:
             if value:
                 return '-1'
@@ -317,15 +319,15 @@ class IntegerFile(FixedLengthFile):
         if value is None:
             return '!'+chr(0)*4
         elif not isinstance(value,int):
-            raise ValueError,'Bad type : expected int, got %s %s' \
-                %(value,value.__class__)
+            raise ValueError('Bad type : expected int, got %s %s' \
+                %(value,value.__class__))
         else:
             if value <= -sys.maxint/2:
-                raise OverflowError,"Integer value must be > %s, got %s" \
-                    %(-sys.maxint/2,value)
+                raise OverflowError("Integer value must be > %s, got %s" \
+                    %(-sys.maxint/2,value))
             if value > sys.maxint/2:
-                raise OverflowError,"Integer value must be <= %s, got %s" \
-                    %(sys.maxint/2,value)
+                raise OverflowError("Integer value must be <= %s, got %s" \
+                    %(sys.maxint/2,value))
             return '-'+struct.pack('>i',value+self.MIDINT)
 
     def from_block(self,block):
@@ -370,8 +372,8 @@ class FloatFile(FixedLengthFile):
         if value is None:
             return '!'+chr(0)*9
         elif not isinstance(value,float):
-            raise ValueError,'Bad type : expected float, got %s %s' \
-                %(value,value.__class__)
+            raise ValueError('Bad type : expected float, got %s %s' \
+                %(value,value.__class__))
         elif value == 0.0:
             return '-'+chr(128)+chr(0)*8
         else:

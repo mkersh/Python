@@ -28,11 +28,11 @@ def make_search_func(db,field,value):
     if isinstance(value,(list,tuple)):
         value = list(value)
         if not len(value)==2:
-            raise ValueError,"If argument is a list, only 2 values \
-                should be passed (found %s)" %len(value)
+            raise ValueError("If argument is a list, only 2 values \
+                should be passed (found %s)" %len(value))
         if not db.fields[field] in [int,float,date,datetime]:
-            raise TypeError,"Search between values is only allowed for " \
-                "int, float, date and datetime (found %s)" %db.fields[field]
+            raise TypeError("Search between values is only allowed for " \
+                "int, float, date and datetime (found %s)" %db.fields[field])
         db._validate(field,value[0])
         db._validate(field,value[1])
         value.sort()

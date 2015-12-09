@@ -1,1 +1,3 @@
-print( 'No attribute named %s' % 'hello')
+import os
+print(os.path.dirname(os.path.abspath(__file__)))
+
