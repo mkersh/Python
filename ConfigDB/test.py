@@ -1,0 +1,1 @@
+print( 'No attribute named %s' % 'hello')
