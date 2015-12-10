@@ -34,6 +34,14 @@ import sys
 import os
 import tempfile
 import shutil
+from buzhug.mkconv import *
+
+def isPython2():
+        return sys.version.startswith("2.")
+if not(isPython2()):
+    # Python 3 does not have a sys.maxint but we will create one to keep the old code happy
+    sys.maxint = sys.maxsize
+    unicode = str # python 3 does not have unicode type, just str
 
 class File:
 
@@ -48,11 +56,11 @@ class File:
         # MK: Next line not working on python 3
         #file(self.path,'w').close()
         open(self.path,'w').close()
-        self.fileobj = open(self.path,'r+b')
+        self.fileobj = open(self.path,'r') # mod rb was r+b
         return self
 
     def open(self):
-        self.fileobj = open(self.path,'r+b')
+        self.fileobj = open(self.path,'r+') # mod rb was r+b
         return self
 
     def get_end_pos(self):
@@ -137,12 +145,12 @@ class FixedLengthFile(File):
 
     def __iter__(self):
         self.fileobj.seek(0)
-        chunk_size = self.block_len*(131072/self.block_len)
+        chunk_size = self.block_len*(131072//self.block_len)
         while True:
             buf = self.fileobj.read(chunk_size)
             if not buf:
                 raise StopIteration
-            for i in range(len(buf)/self.block_len):
+            for i in range(len(buf)//self.block_len):
                 yield buf[self.block_len*i:self.block_len*(i+1)]
 
 class StringFile(VariableLengthFile):
@@ -198,13 +206,15 @@ class UnicodeFile(StringFile):
             raise ValueError('Bad type : expected unicode, got %s %s' %(value,
                     value.__class__))
         else:
-            return StringFile.to_block(self,value.encode('utf-8'))
+            #return StringFile.to_block(self,value.encode('utf-8'))
+            return StringFile.to_block(self,value)
     
     def from_block(self,block):
         if block == '!\n':
             return None
         else:
-            return StringFile.from_block(self,block).decode('utf-8')
+            #return StringFile.from_block(self,block).decode('utf-8')
+            return StringFile.from_block(self,block)
 
 
 # Generic class for dates
@@ -328,13 +338,14 @@ class IntegerFile(FixedLengthFile):
             if value > sys.maxint/2:
                 raise OverflowError("Integer value must be <= %s, got %s" \
                     %(sys.maxint/2,value))
-            return '-'+struct.pack('>i',value+self.MIDINT)
+            return '-'+MKToString(struct.pack('>i',value+self.MIDINT)) #MK - convertion
 
     def from_block(self,block):
         if block[0]=='!':
             return None
         else:
-            return struct.unpack('>i',block[1:])[0]-self.MIDINT
+            #return struct.unpack('>i',block[1:])[0]-self.MIDINT
+            return block
 
 import math
 
@@ -421,7 +432,7 @@ class PositionFile(FixedLengthFile):
         self.next_id = 0
     
     def open(self):
-        self.fileobj = open(self.path,'r+b')
+        self.fileobj = open(self.path,'r+') # mod rb was r+b
         # get deleted items, identified by a leading '#'
         self.deleted_lines, self._count = [],0
         for line_num,line in enumerate(self):
@@ -528,7 +539,7 @@ class PositionFile(FixedLengthFile):
 
     def to_block(self,value):
         # value = positions in field files
-        return '-'+''.join([struct.pack('>i',v) for v in value])
+        return '-'+''.join([MKToString(struct.pack('>i',v)) for v in value])
 
     def from_block(self,block):
         """Returns a list : position of field in their files"""
@@ -545,7 +556,7 @@ class DeletedRowsFile(VariableLengthFile):
         return self
 
     def open(self):
-        self.fileobj = open(self.path,'r+b')
+        self.fileobj = open(self.path,'r') # mod rb was r+b
         self.deleted_rows = [ int(line[:-1]) for line in self ]
         return self
     

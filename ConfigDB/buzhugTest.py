@@ -7,4 +7,3 @@ if os.path.exists(dbPath):
 	shutil.rmtree(dbPath)
 db = Base(dbPath)
 db.create(('name',str),('zip',int))
-#cities = Base('cities').create(('name',str),('zip',int))

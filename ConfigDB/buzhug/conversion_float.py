@@ -86,7 +86,7 @@ def conv(old):
         if t is float:
             old_path = db._file[f].path
             new_path = os.path.join(db._file[f].base,"new_"+db._file[f].name)
-            new_file = open(new_path,"wb")
+            new_file = open(new_path,"w") #mod rb was wb
             for i,r in enumerate(db._file[f]):
                 v = of.from_block(r)
                 if v is None:
@@ -102,7 +102,7 @@ def conv(old):
 
             # double-check if values are the same between old and new file
             db._file[f].open()
-            new_file = open(new_path,"rb")
+            new_file = open(new_path,"r") #mod rb was rb
             bl = db._file[f].block_len
             while True:
                 old = db._file[f].read(bl)

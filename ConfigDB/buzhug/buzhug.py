@@ -424,7 +424,7 @@ class Base:
         # create index file
         self._id_pos = IntegerFile(self.name,'_id_pos').create()
         # create positions file
-        open(self.pos_name,'wb').close()
+        open(self.pos_name,'w').close() # mod rb was wb
         self._pos = PositionFile(self).create()
         # create the file holding a list of the deleted rows (the line number
         # of deleted records in field files)
@@ -447,7 +447,7 @@ class Base:
         if not os.path.exists(self.name) or not os.path.isdir(self.name):
             raise IOError("Base %s doesn't exist" %self.name)
         try:
-            _info = open(self.info_name,'rb')
+            _info = open(self.info_name,'r') #mod rb
         except IOError:
             raise IOError("No buzhug base in directory %s" %self.name)
         return self._open(_info)
@@ -534,7 +534,7 @@ class Base:
         if '__version__' in kw.keys():
             raise NameError("Specifying the __version__ is not allowed")
         rec = dict([(f,self.defaults[f]) for f in self.field_names[2:]])
-        for (k,v) in kw.iteritems():
+        for (k,v) in kw.items():
             self._validate(k,v)
             rec[k] = v
         # initial version = 0
@@ -1011,7 +1011,7 @@ class Base:
         """_iterate on the specified names only"""
         Record = makeRecordClass(self,self.record_class,names)
         files = [ self._file[f] for f in names ]
-        for record in itertools.izip(*files):
+        for record in itertools.zip_longest(*files):
             yield Record(record)
 
     def __getitem__(self,num):
@@ -1058,7 +1058,7 @@ class Base:
         remove the test record[0][0] != "#"
         """
         files = [ self._file[f] for f in self.field_names ]
-        for record in itertools.izip(*files):
+        for record in itertools.zip_longest(*files):
             if record[0][0] != "#":
                 r = self._full_rec(record)
                 yield r

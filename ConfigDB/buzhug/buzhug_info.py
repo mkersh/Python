@@ -48,28 +48,31 @@ def validate_field(base,field_def):
 
 def save_info(base):
     """Save field information in files __info___ and __defaults__"""
-    _info = open(base.info_name,'wb')
+    _info = open(base.info_name,'w') #mod rb was wb
     fields = []
     for k in base.field_names:
         if isinstance(base.fields[k],base.__class__):
             fields.append((k,'<base>'+urllib.quote(base.fields[k].name)))
         else:
             fields.append((k,base.fields[k].__name__))
-    _info.write(bytes(' '.join(['%s:%s' %(k,v) for (k,v) in fields]), 'utf-8'))
+    _info.write(' '.join(['%s:%s' %(k,v) for (k,v) in fields]))
     _info.close()
-    out = open(os.path.join(base.name,"__defaults__"),"wb")
+    out = open(os.path.join(base.name,"__defaults__"),"w") #mod rb was wb
     for field_name,default_value in base.defaults.items():
         if field_name in ["__id__","__version__"]:
             continue
         value = base._file[field_name].to_block(default_value)
-        out.write(bytes("%s %s" %(field_name,value), 'utf-8'))
+        out.write("%s %s" %(field_name,value))
     out.close()
 
 def read_defaults(base):
-    import buzhug_files
+    if isPython2():
+        import buzhug_files
+    else:
+        import buzhug.buzhug_files as buzhug_files
     defaults = dict([(f,None) for f in base.field_names[2:]])
     if os.path.exists(os.path.join(base.name,"__defaults__")):
-        defs = open(os.path.join(base.name,"__defaults__"),"rb").read()
+        defs = open(os.path.join(base.name,"__defaults__"),"r").read() #mod rb was rb
         ix = 0
         f_name = ""
         while ix<len(defs):
