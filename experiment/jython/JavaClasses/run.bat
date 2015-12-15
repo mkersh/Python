@@ -1,0 +1,1 @@
+jython -J-cp java\build\jar\HelloWorld.jar %1
