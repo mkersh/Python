@@ -7,4 +7,4 @@ NOTE: These are a little out of date (Google GUI has changed) but you should sti
 
 Dec 2015 - The standard pip version of PyDrive did not work for me. I had to get latest from GitHub and install using python setup install
 
-Remember not to store this file in GitHub!!!
+Remember NOT to store the client_secrets.json file in GitHub!!!
