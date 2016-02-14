@@ -1,0 +1,16 @@
+setup.cfg
+setup.py
+pysimplesoap/__init__.py
+pysimplesoap/c14n.py
+pysimplesoap/client.py
+pysimplesoap/helpers.py
+pysimplesoap/plugins.py
+pysimplesoap/server.py
+pysimplesoap/simplexml.py
+pysimplesoap/transport.py
+pysimplesoap/wsse.py
+pysimplesoap/xmlsec.py
+soap2py.egg-info/PKG-INFO
+soap2py.egg-info/SOURCES.txt
+soap2py.egg-info/dependency_links.txt
+soap2py.egg-info/top_level.txt

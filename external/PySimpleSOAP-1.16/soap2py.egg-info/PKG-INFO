@@ -1,0 +1,10 @@
+Metadata-Version: 1.0
+Name: soap2py
+Version: 1.16
+Summary: Python simple and lightweight SOAP Library
+Home-page: http://code.google.com/p/pysimplesoap
+Author: Mariano Reingart
+Author-email: reingart@gmail.com
+License: LGPL 3.0
+Description: UNKNOWN
+Platform: UNKNOWN

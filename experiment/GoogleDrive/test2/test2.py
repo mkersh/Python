@@ -53,36 +53,40 @@ def download_file(service, drive_file):
     resp, content = service._http.request(download_url)
     return content
 
-gauth = GoogleAuth()
-gauth.LocalWebserverAuth() # Creates local webserver and auto handles authentication
+def main():
+  gauth = GoogleAuth()
+  gauth.LocalWebserverAuth() # Creates local webserver and auto handles authentication
 
-drive = GoogleDrive(gauth)
+  drive = GoogleDrive(gauth)
 
-# Find a root level folder called TestFolder3
-file_list = drive.ListFile({'q': "'root' in parents and title='TestFolder3'"}).GetList()
-print("Searching for TestFolder3 returned {0} items. {1}".format(len(file_list),file_list[0]['id']))
-dirId = file_list[0]['id']
+  # Find a root level folder called TestFolder3
+  file_list = drive.ListFile({'q': "'root' in parents and title='TestFolder3'"}).GetList()
+  print("Searching for TestFolder3 returned {0} items. {1}".format(len(file_list),file_list[0]['id']))
+  dirId = file_list[0]['id']
 
-fileQueryStr = "'{0}' in parents and trashed=false".format(dirId)
-# Auto-iterate through all files that matches this query
-#file_list = drive.ListFile({'q': "'root' in parents and trashed=false"}).GetList()
-file_list = drive.ListFile({'q': fileQueryStr}).GetList()
-for file1 in file_list:
-  try:
-  	print('title: %s, id: %s\nContents:%s\n' % (file1['title'], file1['id'], file1.GetContentString() ))
-  except Exception as e:
-  	print("Can not get contents of {0}{1}".format(file1['title'], file1['mimeType']))
-    # Next lines show how you can get the content of a google doc file
-  	#service = gauth.service
-  	#print(download_file(service,file1))
-# Create a new file
-file1 = drive.CreateFile({'title': 'Hello.txt'}) # Create GoogleDriveFile instance with title 'Hello.txt'
-file1.SetContentString('Hello World!') # Set content of the file from given string
-file1.Upload() # Upload it
+  fileQueryStr = "'{0}' in parents and trashed=false".format(dirId)
+  # Auto-iterate through all files that matches this query
+  #file_list = drive.ListFile({'q': "'root' in parents and trashed=false"}).GetList()
+  file_list = drive.ListFile({'q': fileQueryStr}).GetList()
+  for file1 in file_list:
+    try:
+    	print('title: %s, id: %s\nContents:%s\n' % (file1['title'], file1['id'], file1.GetContentString() ))
+    except Exception as e:
+    	print("Can not get contents of {0}{1}".format(file1['title'], file1['mimeType']))
+      # Next lines show how you can get the content of a google doc file
+    	#service = gauth.service
+    	#print(download_file(service,file1))
+  # Create a new file
+  file1 = drive.CreateFile({'title': 'Hello.txt'}) # Create GoogleDriveFile instance with title 'Hello.txt'
+  file1.SetContentString('Hello World!') # Set content of the file from given string
+  file1.Upload() # Upload it
 
-# This next line show getting hold of the google service obj from the auth object
-insert_file_into_folder(gauth.service, dirId, file1['id'])
-print('Created new file: %s, id: %s' % (file1['title'], file1['id'])) # title: Hello.txt, id: {{FILE_ID}}
+  # This next line show getting hold of the google service obj from the auth object
+  insert_file_into_folder(gauth.service, dirId, file1['id'])
+  print('Created new file: %s, id: %s' % (file1['title'], file1['id'])) # title: Hello.txt, id: {{FILE_ID}}
 
-# If you don't force exit you get a load of shutdown errors in python 3
-sys.exit(0)
+  # If you don't force exit you get a load of shutdown errors in python 3
+  sys.exit(0)
+
+if __name__ == '__main__':
+  main()

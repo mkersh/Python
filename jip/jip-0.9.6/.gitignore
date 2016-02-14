@@ -1,0 +1,8 @@
+build
+dist
+MANIFEST
+*.class
+*.pyc
+*.swp
+*~
+jip.egg-info

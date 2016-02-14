@@ -1,0 +1,14 @@
+#! /bin/bash
+
+JYTHON_CMD="jython"
+JAVA_LIBS="$VIRTUAL_ENV/javalib/*.jar"
+PYTHON_PATH=""
+
+for lib in $JAVA_LIBS
+do PYTHON_PATH="$PYTHON_PATH:$lib"
+   CLASSPATH="$CLASSPATH:$lib"
+done
+
+export CLASSPATH
+
+$JYTHON_CMD -Dpython.path=$PYTHON_PATH "$@"
