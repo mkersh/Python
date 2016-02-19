@@ -20,7 +20,7 @@ def main():
 	decorator(sayHello)()
 	# Now Let's replace original definition
 	sayHello2 = decorator(sayHello) # Original thought you could do sayHello = decorator(sayHello) but you cant
-	#sayHello = sayHello2 # This is not allowed either because line 18 then fails. The original function is no longer visible
+	#sayHello = sayHello2 # This is not allowed either because line 18 then fails. The original function is no longer visible because of the way scoping works
 	print("After moded original function with permanent decoration")
 	sayHello2()
 	
