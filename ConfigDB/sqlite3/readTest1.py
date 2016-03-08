@@ -6,10 +6,9 @@ def createCarsTable():
 
     # The with does a lot of magic, including committing the changes below
     with con:
-        
+
         cur = con.cursor()
         cur.execute("DROP TABLE IF EXISTS Cars")  # IF EXISTS and IF NOT EXISTS clauses are useful
-        cur.execute("DROP TABLE IF EXISTS Cars")   
         cur.execute("CREATE TABLE IF NOT EXISTS Cars(Id INT, Name TEXT, Price INT)")
         cur.execute("INSERT INTO Cars VALUES(1,'Audi',52642)")
         cur.execute("INSERT INTO Cars VALUES(2,'Mercedes',57127)")
@@ -23,9 +22,9 @@ def createCarsTable():
 def readCarsTable():
     con = lite.connect('test.db')
 
-    with con:    
-        
-        cur = con.cursor()    
+    with con:
+
+        cur = con.cursor()
         cur.execute("SELECT * FROM Cars")
 
         rows = cur.fetchall()
@@ -34,15 +33,15 @@ def readCarsTable():
             print(row)
 
 def readCarsTableWithRowCursor():
-    con = lite.connect('test.db')    
-    
+    con = lite.connect('test.db')
+
     with con:
-        
+
         # This next line specifies a different type of cursor
         # This returns rows as dictionary objects
         con.row_factory = lite.Row
-           
-        cur = con.cursor() 
+
+        cur = con.cursor()
         cur.execute("SELECT * FROM Cars")
 
         rows = cur.fetchall()
