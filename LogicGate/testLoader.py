@@ -8,7 +8,8 @@ def main():
     #loadAndRun("tests.GatesFromNAND")
     #loadAndRun("tests.forever")
     #loadAndRun("tests.latchTest1")
-    loadAndRun("tests.latch1")
+    #loadAndRun("tests.latch1")
+    loadAndRun("tests.decoderTest")
 
 if __name__ == '__main__':
     main()
