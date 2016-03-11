@@ -1,5 +1,20 @@
 from gate import *
 
+def edgeTriggereddLatchCircuit():
+    """
+    edgeTrigger D Latch Circuit
+    """
+    c1 = Circuit("EDGE_D_LATCH")
+    c1.addGate("NOT", 'E', 'E', 'NE')
+
+    mappings = {'D':'D', 'E':'NE', 'Q':'Q1', 'NQ':'NQ1'}
+    c1.addCircuit("D_LATCH", mappings)
+
+    mappings = {'D':'Q1', 'E':'E', 'Q':'Q', 'NQ':'NQ'}
+    c1.addCircuit("D_LATCH", mappings)
+
+    return c1
+
 def dLatchCircuit():
     """
     Gated D Latch Circuit
@@ -87,8 +102,19 @@ def main():
     dlatchIt("[D1]", c,0,0)
     dlatchIt("[D2]", c,1,0)
     dlatchIt("[D3]", c,1,1)
+    dlatchIt("[D3a]", c,0,1)
     dlatchIt("[D4]", c,0,0)
     dlatchIt("[D5]", c,0,1)
+
+    c = edgeTriggereddLatchCircuit()
+    c.setLineValue('Q', 0)
+    c.setLineValue('NQ', 1)
+    dlatchIt("[ED1]", c,0,0)
+    dlatchIt("[ED2]", c,1,0)
+    dlatchIt("[ED3]", c,1,1)
+    dlatchIt("[ED3a]", c,0,1) # Q does not change at this point. Only changes when we move from E=0 to E=1
+    dlatchIt("[ED4]", c,0,0)
+    dlatchIt("[ED5]", c,0,1)
 
 if __name__ == '__main__':
     main()
