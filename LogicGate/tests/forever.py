@@ -1,9 +1,4 @@
-import sys
-def addPath(path):
-    if str(sys.path).find(path) == -1:
-        sys.path.insert(0,path)
-addPath("../simulator")
-from gate import *
+from simulator.gate import *
 
 def foreverCircuit():
     """
@@ -66,7 +61,3 @@ def main():
     c.setLineValue('Z', 0)
     c.setLineValue('X', 1)
     runCircuit("foreverCircuit3 X=1", c)
-
-
-if __name__ == '__main__':
-    main()

@@ -1,4 +1,4 @@
-from debug import *
+from simulator.debug import *
 
 class Gate:
     _circuit = None

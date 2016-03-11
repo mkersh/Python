@@ -1,9 +1,4 @@
-import sys
-def addPath(path):
-    if str(sys.path).find(path) == -1:
-        sys.path.insert(0,path)
-addPath("../simulator")
-from gate import *
+from simulator.gate import *
 
 def xorGateCircuit():
     """
@@ -87,8 +82,3 @@ def main():
     xyTruthTable("AND Truth Table:", andGateCircuit())
     xyTruthTable("OR Truth Table:", orGateCircuit())
     xyTruthTable("XOR Truth Table:", xorGateCircuit())
-
-
-
-if __name__ == '__main__':
-    main()

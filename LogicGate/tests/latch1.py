@@ -1,10 +1,10 @@
-import sys
-def addPath(path):
-    if str(sys.path).find(path) == -1:
-        sys.path.insert(0,path)
-addPath("../simulator")
-addPath("../circuits")
-from latch import *
+from circuits.latch import *
+
+def dlatchIt(evTitle, c, d, e):
+    c.setLineValue('D', d)
+    c.setLineValue('E', e)
+    c.run()
+    print("{0}: D={1}\tE={2}\tQ={3}\tNQ={4}".format(evTitle, c.getLineValue("D"), c.getLineValue("E"), c.getLineValue("Q"), c.getLineValue("NQ")))
 
 def main():
     c = srNorLatchCircuit()
@@ -19,7 +19,3 @@ def main():
     dlatchIt("[ED3a]", c,0,1) # Q does not change at this point. Only changes when we move from E=0 to E=1
     dlatchIt("[ED4]", c,0,0)
     dlatchIt("[ED5]", c,0,1)
-
-
-if __name__ == '__main__':
-    main()
