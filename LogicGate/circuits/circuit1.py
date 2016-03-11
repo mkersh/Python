@@ -1,3 +1,8 @@
+import sys
+def addPath(path):
+    if str(sys.path).find(path) == -1:
+        sys.path.insert(0,path)
+addPath("../simulator")
 from gate import *
 
 def main():

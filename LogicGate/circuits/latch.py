@@ -1,9 +1,17 @@
+import sys
+def addPath(path):
+    if str(sys.path).find(path) == -1:
+        sys.path.insert(0,path)
+addPath("../simulator")
 from gate import *
 
 def edgeTriggereddLatchCircuit():
     """
     edgeTrigger D Latch Circuit
     """
+    if Circuit.exists("EDGE_D_LATCH"):
+        return Circuit.get("EDGE_D_LATCH")
+
     c1 = Circuit("EDGE_D_LATCH")
     c1.addGate("NOT", 'E', 'E', 'NE')
 
@@ -19,6 +27,9 @@ def dLatchCircuit():
     """
     Gated D Latch Circuit
     """
+    if Circuit.exists("D_LATCH"):
+        return Circuit.get("D_LATCH")
+
     c1 = Circuit("D_LATCH")
     c1.addGate("NOT", 'D', 'D', 'ND')
 
@@ -31,6 +42,9 @@ def gatedSrLatchCircuit():
     """
     Gated SR Latch Circuit
     """
+    if Circuit.exists("GATED_SR_LATCH"):
+        return Circuit.get("GATED_SR_LATCH")
+
     c1 = Circuit("GATED_SR_LATCH")
     c1.addGate("AND", 'R', 'E', 'IN1')
     c1.addGate("AND", 'S', 'E', 'IN2')
@@ -44,6 +58,9 @@ def srNorLatchCircuit():
     """
     SR NOR Latch Circuit
     """
+    if Circuit.exists("SR_NOR_LATCH"):
+        return Circuit.get("SR_NOR_LATCH")
+
     c1 = Circuit("SR_NOR_LATCH")
     c1.addGate("NOR", 'R', 'NQ', 'Q')
     c1.addGate("NOR", 'S', 'Q', 'NQ')

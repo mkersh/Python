@@ -1,15 +1,5 @@
 from debug import *
 
-def andGate(circuit, in1Line, in2Line, out1Line):
-    """(in1Line, in2Line, out1Line) refer to named lines.
-    We perform a binary AND on in1Line and in2Line and store value in out1Line
-    """
-    print("Basic AND gate function ")
-    in1 = circuit.getLineValue(in1Line)
-    in2 = circuit.getLineValue(in2Line)
-    out1 = in1 and in2
-    circuit.setLineValue(out1Line, out1)
-
 class Gate:
     _circuit = None
     _gateName = ""
@@ -113,15 +103,17 @@ class subCircuit:
 class Circuit(object):
     """Digital circuit simulator"""
 
-    _basic_gates = {"AND": andGate}
     _all_circuits = {} #  map of all circuits
-    _gates = [] # Stores the gates or Circuit in this Circuit
-    _subCircuit = []
-    _lines = {} # Stores the lines that act as input and/or output for the gates and circuits
 
     def all():
         """ return all circuits dictionary"""
         return Circuit._all_circuits
+
+    def exists(name):
+        return not Circuit._all_circuits.get(name) is None
+
+    def get(name):
+        return Circuit._all_circuits.get(name)
 
     def __init__(self, name):
         self._gates = []
