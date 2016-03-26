@@ -21,7 +21,7 @@ def makeCircuit():
     c2.addCircuit("FullBitAdder", mappings)
     mappings = {'A':'X2', 'B': 'Y2', 'CIN': 'C1OUT', 'S':'S2', 'COUT':'C2OUT'}
     c2.addCircuit("FullBitAdder", mappings)
-    mappings = {'A':'X3', 'B': 'Y3', 'CIN': 'C2OUT', 'S':'S3', 'COUT':'C3OUT'}
+    mappings = {'A':'X3', 'B': 'Y3', 'CIN': 'C2OUT', 'S':'S3', 'COUT':'COUT'}
     c2.addCircuit("FullBitAdder", mappings)
     return c2
 

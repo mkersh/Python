@@ -129,7 +129,12 @@ class Circuit(object):
         return self._name
 
     def getLineValue(self, lineName):
-        return self._lines.get(lineName,0)
+        if lineName == "1":
+            return 1
+        elif lineName == "0":
+            return 0
+        else:
+            return self._lines.get(lineName,0)
 
     def setLineValue(self, lineName, lineValue):
         self._lines[lineName] = lineValue
