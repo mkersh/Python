@@ -85,6 +85,8 @@ def main():
   insert_file_into_folder(gauth.service, dirId, file1['id'])
   print('Created new file: %s, id: %s' % (file1['title'], file1['id'])) # title: Hello.txt, id: {{FILE_ID}}
 
+  #fileDetails = download_file(gauth.service,file1)
+  #print("XXXX:", fileDetails)
   # If you don't force exit you get a load of shutdown errors in python 3
   sys.exit(0)
 
