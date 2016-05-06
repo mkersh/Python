@@ -3,6 +3,8 @@ import sys
 import base64
 import uuid
 import glob
+import socket
+import platform
 
 if sys.version.startswith("3."):
     # Python 3.x
@@ -37,12 +39,8 @@ def getNewImageFileName():
 
 def saveImage(base64Image):
     "Convert and save Base64 image to a folder"
-
-    print("here1")
     imgdata = base64.b64decode(base64Image)
-    print("here2")
     filename = getNewImageFileName()
-    print("here3")
     with open(filename, 'wb') as f:
         f.write(imgdata)
 
@@ -53,6 +51,11 @@ def deleteAll():
     files = glob.glob(imagesPat)
     for f in files:
         os.remove(f)
+
+def getServerDirectory():
+    "return details of machine and folder pictures will be stored on"
+    print()
+    return platform.system() + "@" + socket.gethostname() + "::" + getImagesDir()
 
 dispatcher = SoapDispatcher(
     'my_dispatcher',
@@ -71,6 +74,9 @@ dispatcher.register_function('saveImage', saveImage,
     args={'base64Image':str})
 dispatcher.register_function('deleteAll', deleteAll,
     returns={},
+    args={})
+dispatcher.register_function('getServerDirectory', getServerDirectory,
+    returns={'serverfolder':str},
     args={})
 
 def startServer():
