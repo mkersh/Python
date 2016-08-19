@@ -12,7 +12,7 @@ import sys
 # But when buffer get to high or delay go too down, you can broke things
 buffer_size = 4096
 delay = 0.0001
-forward_to = ('192.168.26.131', 80)
+forward_to = ('127.0.0.1', 8080)
 
 class Forward:
     def __init__(self):
