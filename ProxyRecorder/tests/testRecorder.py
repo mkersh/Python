@@ -43,6 +43,29 @@ class TestRecorder1(unittest.TestCase):
            self.assertTrue(rec.isForwardSocket(2))
         self.assertEqual(rec.socketCount(),0)
 
+    def test_SocketData1(self):
+        rec = Recorder()
+        rec.createSocketPair(1,2)
+        self.assertEqual(rec.getSocketData(1), None)
+        self.assertEqual(rec.getSocketData(2), None)
+
+    def test_RecordMessage(self):
+        rec = Recorder()
+        rec.createSocketPair(1,2)
+        rec.recordMessage(1,"Hello World")
+        self.assertEqual(rec.getSocketData(1), "Hello World")
+        rec.recordMessage(1,"xxx")
+        self.assertEqual(rec.getSocketData(1), "Hello Worldxxx")
+        rec.recordMessage(2,"1")
+        rec.recordMessage(2,"2")
+        rec.recordMessage(2,"3")
+        self.assertEqual(rec.getSocketData(2), "123")
+
+    def test_RecorderConfig(self):
+        rec = Recorder()
+        recObject = rec.getConfig().getRecordingSetting("RecordingName")
+        self.assertEqual(recObject["name"], "RecordingName")
+
     def test_SocketPairMissing1(self):
         rec = Recorder()
         rec.createSocketPair(1,2)
