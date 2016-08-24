@@ -14,6 +14,15 @@ buffer_size = 4096
 delay = 0.0001
 forward_to = ('127.0.0.1', 8080)
 
+class Record:
+    isForwardChannel = {}
+    def __init__(self):
+        pass
+
+    def newPair(client, forward):
+        self.isForwardChannel[forward] = True
+        self.isForwardChannel[clientsock] = False
+
 class Forward:
     def __init__(self):
         self.forward = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -29,6 +38,7 @@ class Forward:
 class TheServer:
     input_list = []
     channel = {}
+    isForwardChannel = {}
 
     def __init__(self, host, port):
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -65,6 +75,8 @@ class TheServer:
             self.input_list.append(forward)
             self.channel[clientsock] = forward
             self.channel[forward] = clientsock
+            self.isForwardChannel[forward] = True
+            self.isForwardChannel[clientsock] = False
         else:
             print("Can't establish connection with remote server.",)
             print("Closing connection with client side", clientaddr)
@@ -89,7 +101,16 @@ class TheServer:
         # here we can parse and/or modify the data before send forward
         # Look for beginDate and endDate in messages
         #data = processData(data)
-        self.channel[self.s].send(data)
+        sendChannel = self.channel[self.s]
+        if self.isForwardChannel[sendChannel]:
+            print("Forward Data")
+            print("=======================")
+            print("{0}".format(data))
+        else:
+            print("Return Data")
+            print("=======================")
+            print("{0}".format(data))
+        sendChannel.send(data)
 
 # Was planning to use modify date information but I have aborted this idea
 def processData(data):

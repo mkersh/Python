@@ -31,8 +31,7 @@ if __name__ == '__main__':
 	#unittest.main()
   # Setting up a TestLoader and getting it to auto discover is better
   # but it is not recursive
-  
+
   pdb.set_trace()
   discoverRunTest(".")
   discoverRunTest("testDir")
-	
