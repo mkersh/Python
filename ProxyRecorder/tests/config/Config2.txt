@@ -1,0 +1,9 @@
+section: RecordingName
+webservice-type: SOAP
+message: msg1
+match.url.1: RegExUrl1
+match.url.2: RegExUrl2
+match.body.1: RegExBody1
+match.body.2: RegExBody2
+message: msg2
+message: msg3
