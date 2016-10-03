@@ -3,3 +3,4 @@ experiment/Hash
 database
 client_secrets.json
 cachedir
+logs
