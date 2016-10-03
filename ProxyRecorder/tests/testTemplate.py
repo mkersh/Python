@@ -2,7 +2,7 @@ import sys
 if __name__ == '__main__':
     sys.path.insert(0,"..")
 import unittest
-import configFile as c
+from logit import *
 
 class TestConfigMethods(unittest.TestCase):
 
