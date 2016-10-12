@@ -1,7 +1,7 @@
 import sqlite3 as lite
 import sys
 import pdb
-F
+
 def createCarsTable():
     con = lite.connect('test.db')
     #pdb.set_trace() implicitly starts the debugger
