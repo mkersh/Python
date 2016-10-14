@@ -37,6 +37,7 @@ def permutate(lst):
     n = len(lst)
     res = permutateAux(n,-1,n,[])
     # res are just permutations of range(n). We need to map back to original lst
+    # This is a real kludge I know but it was the quickest way I could think of doing it
     jsonStr = json.dumps(res)
     #DEBUG("JSON Str to replace in:\n {0}".format(jsonStr))
     for i in range(n):
