@@ -42,7 +42,6 @@ def permutate(lst):
     rangeList = range(n)
     if str(OrigList) == str(rangeList):
         isRange = True
-
     res = permutateAux(n,-1,n,[])
     return res
 
