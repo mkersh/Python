@@ -1,5 +1,4 @@
 import sys
-import pickle
 import json
 import pdb
 if __name__ == '__main__':
@@ -10,6 +9,11 @@ from stopwatch import *
 
 SW = STOPWATCH()
 
+
+# A few nasty globals to pass between permate and permutateAux. 
+OrigList = []
+isRange = False
+
 def getVal(total_n, perm_set, val):
     val = val % total_n
     if val not in perm_set:
@@ -17,24 +21,25 @@ def getVal(total_n, perm_set, val):
     else:
         return getVal(total_n, perm_set,val+1)
 
+
 def permutateAux(total_n,parent_val,num_iters,perm_list):
     if num_iters == 0:
-        #DEBUG("LEAF parent={0} num_iters={1} perm={2}".format(parent_val,num_iters,perm_list))
-        #assert len(perm_list) == len(set(perm_list)), "Invalid Result"
-        return [perm_list]
+        # If our original list was just range(n) then we do not need to map results
+        return [perm_list] if isRange else [[ OrigList[x] for x in perm_list]]
     else:
         res = []
         perm_set = set(perm_list)
         for i in range(1,num_iters+1):
             val = getVal(total_n, perm_set, parent_val+i)
-            # Having these debug statements in makes a massive difference to performance. Even when no logging DEBUG level.
-            #DEBUG("RECURSE parent={0} num_iters={1} perm={2} i={3} val={4}".format(parent_val,num_iters,perm_set,i,val))
             perm_set.add(val) # I didn't have this line originally. worked for n=3 but fails for n>3
             res = res + permutateAux(total_n,val,num_iters-1,perm_list+[val])
         return res
 
 def permutate(lst):
+    global OrigList, isRange # I keep having to do this?? There must be a better way
+    OrigList = lst
     n = len(lst)
+<<<<<<< HEAD
     res = permutateAux(n,-1,n,[])
     # res are just permutations of range(n). We need to map back to original lst
     # This is a real kludge I know but it was the quickest way I could think of doing it
@@ -61,8 +66,16 @@ def permutate(lst):
     perms_list = json.loads(jsonStr)
     #DEBUG("Perms:\n {0}".format(perms_list))
     return perms_list
+=======
+    rangeList = range(n)
+    if str(OrigList) == str(rangeList):
+        isRange = True
+>>>>>>> refactorQueens
 
+    res = permutateAux(n,-1,n,[])
+    return res
 
+# For debugging/testing
 def checkNoDuplicates(res):
     pickled_list = set([])
     failed = False
@@ -84,10 +97,10 @@ def main():
     #res = permutate(range(3))
     #res = permutate(range(4))
     #res = permutate(range(5))
+    res = permutate(range(8))
     #res = permutate(range(10))
-    #res = permutate(range(10))
-    l1 = [1,2,3,4]
-    res = permutate(l1)
+    #l1 = ['a','b','c']
+    #res = permutate(l1)
     print(len(res))
     #INFO("About to print results:\n{0}".format(res))
     print(res)

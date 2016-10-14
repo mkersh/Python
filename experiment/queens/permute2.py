@@ -17,9 +17,9 @@ def main():
     n = 8
     cols = range(n)
     lst = [1,2,3,4]
-    res = list(permutations(lst))
+    res = list(permutations(cols))
     print(len(res))
-    print(res)
+    #print(res)
     SW.stopAndPrint()
 
 if __name__ == '__main__':
