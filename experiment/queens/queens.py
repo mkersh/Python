@@ -2,14 +2,13 @@ import sys
 if __name__ == '__main__':
     pathDir = "../../utils"
     sys.path.insert(0,pathDir)
-from permute import *
 from stopwatch import *
 from itertools import permutations
 
 SW = STOPWATCH()
 SW.start()
 sol = 1 # extra line I added
-n = 8
+n = 10
 cols = range(n)
 
 for vec in permutations(cols):

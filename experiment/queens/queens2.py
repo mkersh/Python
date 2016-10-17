@@ -1,3 +1,9 @@
+import sys
+if __name__ == '__main__':
+    pathDir = "../../utils"
+    sys.path.insert(0,pathDir)
+from stopwatch import *
+
 num = 1
 def nqueens(r,n,p):
   global num
@@ -23,4 +29,7 @@ def backtracknqueens(n):
     print n, nqueens(0,n,[])
 
 if __name__ == '__main__':
+  SW = STOPWATCH()
+  SW.start()
   backtracknqueens(8)
+  SW.stopAndPrint()

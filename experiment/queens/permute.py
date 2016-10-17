@@ -22,7 +22,7 @@ def getVal(total_n, perm_set, val):
         return getVal(total_n, perm_set,val+1)
 
 
-def permutateAux(total_n,parent_val,num_iters,perm_list):
+def permutateAux(total_n,parent_val,num_iters,perm_list, validator=None):
     if num_iters == 0:
         # If our original list was just range(n) then we do not need to map results
         return [perm_list] if isRange else [[ OrigList[x] for x in perm_list]]
@@ -32,17 +32,22 @@ def permutateAux(total_n,parent_val,num_iters,perm_list):
         for i in range(1,num_iters+1):
             val = getVal(total_n, perm_set, parent_val+i)
             perm_set.add(val) # I didn't have this line originally. worked for n=3 but fails for n>3
-            res = res + permutateAux(total_n,val,num_iters-1,perm_list+[val])
+            newPermList = perm_list+[val]
+            if validator is not None:
+                if validator(newPermList) == False:
+                    # Ignore this permutation. It is already invalid, no point in carrying on
+                    continue 
+            res = res + permutateAux(total_n,val,num_iters-1,newPermList,validator)
         return res
 
-def permutate(lst):
+def permutate(lst, validator=None):
     global OrigList, isRange # I keep having to do this?? There must be a better way
     OrigList = lst
     n = len(lst)
     rangeList = range(n)
     if str(OrigList) == str(rangeList):
         isRange = True
-    res = permutateAux(n,-1,n,[])
+    res = permutateAux(n,-1,n,[],validator)
     return res
 
 # For debugging/testing
@@ -59,6 +64,19 @@ def checkNoDuplicates(res):
     if failed:
         assert False, "Duplicate Results"
 
+def validator1(perm):
+    #INFO("validator1 called")
+    return False
+
+def queensDiagonalCheckValid(perm):
+    n = len(perm) 
+    if n < 2:
+        return True
+    cols = range(n)
+    res = (n == len(set(perm[i]+i for i in cols)) == len(set(perm[i]-i for i in cols)))
+    #DEBUG("QDC - {0} {1} {2}".format(res, n, perm))
+    return res
+
 def main():
     #setLogLevel("INFO")
     setLogLevel("DEBUG")
@@ -67,13 +85,14 @@ def main():
     #res = permutate(range(3))
     #res = permutate(range(4))
     #res = permutate(range(5))
-    res = permutate(range(8))
+    res = permutate(range(8), queensDiagonalCheckValid)
     #res = permutate(range(10))
     #l1 = ['a','b','c']
     #res = permutate(l1)
     print(len(res))
     #INFO("About to print results:\n{0}".format(res))
-    print(res)
+    INFO(res)
+    #print(res)
     #checkNoDuplicates(res)
     #pSet = set([0,3])
     #val1 = getVal(4,pSet,4)
