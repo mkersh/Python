@@ -1,5 +1,5 @@
 # Just want to do a simple experiment with a simple mutable Tree data structure in Python
-# This is to compare it with an immutable version that I have created in haskell
+# This is to compare it with an immutable version that I have created in haskell https://github.com/mkersh/HaskellTests/blob/master/tree.hs 
 
 # To keep things simple I will just use a dictionary to represent Trees
 # The dictionary will have the following keys: {val:"Node value", left, right: <other obj or None)}
