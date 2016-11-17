@@ -54,8 +54,8 @@ def getInitialBoard(n):
     We represent the board as a vector of tuples (row,col).
     Each tuple represent the position of a queen on the board.
     """
-    offset = getRandom(64)
     maxPos = n*n
+    offset = getRandom(maxPos)
     board = []
     for i in range(n):
         rowP = offset % n
@@ -154,7 +154,7 @@ def main():
     SW = STOPWATCH()
     SW.start()
     #pdb.set_trace()
-    board = getInitialBoard(8)
+    board = getInitialBoard(14)
     #board = [(6, 6), (5, 5), (7, 5), (6, 6), (4, 7), (1, 1), (1, 5), (5, 1)]
     iteractiveRepair(board)
     SW.stopAndPrint()
