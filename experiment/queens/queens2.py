@@ -7,7 +7,9 @@ from stopwatch import *
 num = 1
 def nqueens(r,n,p):
   # p represents a potential board position for the queens. It is a vector that represents the column positions of queens for
-  # a board with n rows and n columns. The values in the vector identify column positions for the different rows.
+  # a board with (eventually) n rows and n columns. The values in the vector identify column positions for the different rows.
+  # With this algorithm p is built up gradually.
+  # So we start with an empty vector (i.e. no columns allocated) and then we add to it below.
   global num
   s  = len(p)
   cols = range(s)
@@ -22,6 +24,8 @@ def nqueens(r,n,p):
       num += 1
       return 1
     # This next line is performing all the magic. It is doing a set difference and only considering columns not currently considered  
+    # We then call nqueens recursively. This will check that the item we have just added is valid
+    # If valid then number of items in p == n then we have found a solution else we add more items
     for c in set(range(n)) - set(p):
         count += nqueens(r + 1, n, p + [c])
 
