@@ -85,10 +85,11 @@ def main():
     #res = permutate(range(3))
     #res = permutate(range(4))
     #res = permutate(range(5))
-    res = permutate(range(8), queensDiagonalCheckValid)
+    #res = permutate(range(8), queensDiagonalCheckValid)
     #res = permutate(range(10))
     #l1 = ['a','b','c']
     #res = permutate(l1)
+    res = permutate(["a","b","c","d"])
     print(len(res))
     #INFO("About to print results:\n{0}".format(res))
     INFO(res)

@@ -64,7 +64,7 @@ def getInitialBoard(n):
         #if offset == 0:
         #    offset = getRandom(64)
         #offset = (offset * 2) % maxPos
-        offset = getRandom(64)
+        offset = getRandom(maxPos)
     return board
 
 def getPositionToImprove(scoreCard):
@@ -154,7 +154,7 @@ def main():
     SW = STOPWATCH()
     SW.start()
     #pdb.set_trace()
-    board = getInitialBoard(14)
+    board = getInitialBoard(13)
     #board = [(6, 6), (5, 5), (7, 5), (6, 6), (4, 7), (1, 1), (1, 5), (5, 1)]
     iteractiveRepair(board)
     SW.stopAndPrint()

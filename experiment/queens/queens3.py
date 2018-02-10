@@ -6,6 +6,8 @@ if __name__ == '__main__':
 from permute import *
 from stopwatch import *
 
+# This approach for working out the nXn queens problems uses the same
+# algorithm as queens.py but is using my own implementation of permutate
 SW = STOPWATCH()
 SW.start()
 sol = 1 # extra line I added
